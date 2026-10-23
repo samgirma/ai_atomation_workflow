@@ -54,7 +54,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"success\": false,\n  \"error\": \"{{ $json.error }}\",\n  \"code\": \"INVALID_QUESTION\"\n}",
+        "responseBody": "={{ JSON.stringify({ success: false, error: $json.error, code: 'INVALID_QUESTION' }) }}",
         "options": {
           "responseCode": 400
         }
@@ -170,7 +170,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"success\": true,\n  \"question\": \"{{ $json.question }}\",\n  \"answer\": \"{{ $json.answer }}\",\n  \"sources\": [],\n  \"insufficient_evidence\": true\n}",
+        "responseBody": "={{ JSON.stringify({ success: true, question: $json.question, answer: $json.answer, sources: [], insufficient_evidence: true }) }}",
         "options": {
           "responseCode": 200
         }

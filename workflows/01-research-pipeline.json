@@ -74,7 +74,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"success\": false,\n  \"error\": \"{{ $json.error }}\",\n  \"code\": \"INVALID_TOPIC\"\n}",
+        "responseBody": "={{ JSON.stringify({ success: false, error: $json.error, code: 'INVALID_TOPIC' }) }}",
         "options": {
           "responseCode": 400
         }
@@ -141,7 +141,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"success\": true,\n  \"topic\": \"{{ $json.topic }}\",\n  \"articles_processed\": 0,\n  \"summaries_stored\": 0,\n  \"digest_sent\": false,\n  \"message\": \"No valid articles found for the specified topic.\"\n}",
+        "responseBody": "={{ JSON.stringify({ success: true, topic: $json.topic, articles_processed: 0, summaries_stored: 0, digest_sent: false, message: 'No valid articles found for the specified topic.' }) }}",
         "options": {}
       },
       "id": "11111111-1111-4111-8111-111111111109",
@@ -317,7 +317,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"success\": true,\n  \"topic\": \"{{ $json.topic }}\",\n  \"articles_processed\": {{ $json.articles_processed }},\n  \"summaries_stored\": {{ $json.summaries_stored }},\n  \"digest_sent\": {{ $json.digest_sent }},\n  \"articles\": {{ JSON.stringify($json.articles) }}\n}",
+        "responseBody": "={{ JSON.stringify({ success: true, topic: $json.topic, articles_processed: $json.articles_processed, summaries_stored: $json.summaries_stored, digest_sent: $json.digest_sent, articles: $json.articles }) }}",
         "options": {
           "responseCode": 200
         }
