@@ -1,0 +1,74 @@
+{
+  "success": true,
+  "topic": "quantum computing",
+  "articles_processed": 5,
+  "summaries_stored": 5,
+  "digest_sent": true,
+  "articles": [
+    {
+      "title": "Perimeter Institute Launches New Physics-Driven AI Initiative",
+      "summary": "Perimeter Institute has established an interdisciplinary initiative pairing theoretical physics algorithms with machine learning architectures to accelerate quantum computing discoveries.",
+      "key_points": [
+        "Unifies theoretical physics research with neural network development",
+        "Targeting algorithmic breakthroughs for quantum simulators",
+        "Collaborative effort across academic and industrial research hubs"
+      ],
+      "source_url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNRm0tVHhWdGFuUjZoamNsMzI3RW5aaHF3bXEwY1lBTkUyLWpJa0c2cGlPd1R0c0tlS1BhUzhpdThUYmVNYUsxZkdvVk5KdFRtamZ2aEtHMlZNZ09vWXhDdWo3aGt1WUdtVE81QTV4cmpKY0ZTcW9KVklXZV91YW13STRwTU1FdnVXZ1g0VGlhaXItcUhaaE5sU1A1LUo5X0V5",
+      "topic": "quantum computing",
+      "published_at": "2026-10-22T22:30:37.000Z",
+      "source_name": "HPCwire"
+    },
+    {
+      "title": "NSA Announces Post-Quantum Cryptography Measures to Safeguard National Security Systems",
+      "summary": "The National Security Agency has published updated transition timelines and cryptographic algorithm requirements to protect government data against future quantum decryption threats.",
+      "key_points": [
+        "Mandates migration to NIST-standardized quantum-resistant cryptographic algorithms",
+        "Sets phased deployment schedules across federal agencies and defense networks",
+        "Focuses on securing asymmetric encryption algorithms and digital certificates"
+      ],
+      "source_url": "https://news.google.com/rss/articles/CBMiggJBVV95cUxNYkltZWR6bXh2WmN0V3Qxc29zU2NrT0cxb1VwMElqQU0yVE5BRWYxXzRseGRycGszWEVvc2o2ckh0SERvZ2hCNF9fSlVTQ0V3ZHpXNnpqTEVPTTJMSXZRM0F0SV9EbnFoWUVhRnJrczFFd2ptZncyVWZRUkxMMmtVNFlmOWlaMGdwSXVOY2xpWnlMT1AwLWxvVVFYelNqbDV6ZzVPWklpZUZIVk9idm9wUm1pc256a0FveU41TmNQblQ3bVpSX1ZRdnhROS1hTGZCZFh2TjBtdHNrYS0taVF1UExCd1ZkdHFXNGdkaTZ4UjJJYmNuaGhDMmxDRHhYV2xRRmc",
+      "topic": "quantum computing",
+      "published_at": "2026-10-01T07:00:00.000Z",
+      "source_name": "National Security Agency (NSA) (.gov)"
+    },
+    {
+      "title": "Gix Internet Reports Quantum X Labs Milestones With NVIDIA, IBM",
+      "summary": "Quantum X Labs announced research validation across hybrid classical-quantum computing workflows utilizing NVIDIA GPU clusters and IBM quantum cloud processors.",
+      "key_points": [
+        "Benchmarked hybrid quantum error mitigation protocols",
+        "Integrated GPU accelerated quantum circuit emulation",
+        "Demonstrated latency reduction in complex financial optimization modeling"
+      ],
+      "source_url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE8xWjZoTllGY1BvZ0tFQU9KVFlsU1pWWFpWM1lXQ0hqaTM0MFpWR3dhQU9NNjBiRlEwR0M1Mi1MUm1neXRycjNZdDE3NzJmMi1BS0FXb1dfOS0wUEhYb19qNWx3OUpGTTlDekN3Q245Rm9mbEtScUs0",
+      "topic": "quantum computing",
+      "published_at": "2026-10-22T18:58:54.000Z",
+      "source_name": "Quantum Zeitgeist"
+    },
+    {
+      "title": "SEALSQ Keynote Presentation on Quantum + AI Convergence",
+      "summary": "Industry leaders presented semiconductor security architectures designed for edge devices vulnerable to future quantum cryptanalysis, highlighting post-quantum secure hardware elements.",
+      "key_points": [
+        "Introduced hardware root-of-trust chips with quantum-resistant keys",
+        "Addressed IoT and automotive security constraints",
+        "Demonstrated zero-knowledge authentication on embedded silicon"
+      ],
+      "source_url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1rZWwxY2RBN3hsNXZRbC1FMUc0a1oxZ0hTZXVKYmpNMzdEQzVXdUx0akJGZjh6ampvU0tkNnlYUUppUVpKNWJsc2NTQ0l3cUJIOVhjd0loX1QyblJRaWJXSkFUd1lBVmwwdXlNMg",
+      "topic": "quantum computing",
+      "published_at": "2026-10-22T18:58:54.000Z",
+      "source_name": "Quantum Zeitgeist"
+    },
+    {
+      "title": "US Treasury Proposes Expanding Investment Review to Quantum and AI Fields",
+      "summary": "The US Department of the Treasury released proposed rules governing outbound investments into sensitive national security technologies, specifically highlighting quantum sensing and computing systems.",
+      "key_points": [
+        "Applies strict notification and prohibition thresholds to high-end quantum development",
+        "Defines criteria for sensitive computational equipment and design software",
+        "Includes public comment period prior to final rule implementation"
+      ],
+      "source_url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE91M18yQVhETHI4YUdWQ1ZNTFdKTFRhSGR5Zm9LOVJQS3VGenJvb0I2eHZDTE14OHJYTjBqdGxKUGQ4REdObzlSbEJkTTVzMTVzT1pVS3ZaeXV3WjZEUEt5eE1zQ1gwWjBuaWlvMzVCS3JoUmlSOUE",
+      "topic": "quantum computing",
+      "published_at": "2026-10-23T11:55:00.000Z",
+      "source_name": "BigGo Finance"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+# Environment variables and secret configurations
+.env
+.env.local
+.env.*.local
+.env.*
+!.env.example
+
+# Credentials, keys, and private certificates
+*credential*.json
+*secret*.json
+*.pem
+*.key
+*.p12
+
+# Local n8n data directories and sqlite databases
+.n8n/
+n8n-local-data/
+*.sqlite
+*.sqlite-journal
+
+# Logs and runtime artifacts
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Node modules & OS metadata
+node_modules/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# Temporary files & test output
+tmp/
+temp/
+coverage/
+.system_generated/

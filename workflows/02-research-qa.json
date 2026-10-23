@@ -1,0 +1,369 @@
+{
+  "name": "02 - Research Question Answering",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "research-qa",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "22222222-2222-4222-8222-222222222201",
+      "name": "QA Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ],
+      "webhookId": "research-qa-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validate question input\nconst body = $json.body || {};\nconst rawQuestion = typeof body.question === 'string' ? body.question.trim() : '';\n\nconst isValid = rawQuestion.length >= 3 && rawQuestion.length <= 500;\n\nreturn [{\n  json: {\n    question: rawQuestion,\n    is_valid: isValid,\n    error: isValid ? null : 'Field \"question\" must be a non-empty string between 3 and 500 characters.'\n  }\n}];"
+      },
+      "id": "22222222-2222-4222-8222-222222222202",
+      "name": "Validate Question Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.is_valid }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "22222222-2222-4222-8222-222222222203",
+      "name": "Is Question Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": false,\n  \"error\": \"{{ $json.error }}\",\n  \"code\": \"INVALID_QUESTION\"\n}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "22222222-2222-4222-8222-222222222204",
+      "name": "Return Invalid Question Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        940,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key={{ $env.GEMINI_API_KEY }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"models/text-embedding-004\",\n  \"content\": {\n    \"parts\": [\n      {\n        \"text\": \"{{ $json.question }}\"\n      }\n    ]\n  }\n}",
+        "options": {
+          "timeout": 15000,
+          "retry": {
+            "maxRetries": 3,
+            "retryInterval": 2000
+          }
+        }
+      },
+      "id": "22222222-2222-4222-8222-222222222205",
+      "name": "Embed User Question",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        940,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://{{ $env.PINECONE_INDEX_HOST || 'research-pipeline-index.svc.pinecone.io' }}/query",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Api-Key",
+              "value": "={{ $env.PINECONE_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"vector\": {{ JSON.stringify($json.embedding.values) }},\n  \"topK\": 4,\n  \"includeMetadata\": true,\n  \"namespace\": \"research\"\n}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "22222222-2222-4222-8222-222222222206",
+      "name": "Query Pinecone Vector Index",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1180,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Inspect matches and enforce minimum cosine similarity threshold\nconst question = $('Validate Question Payload').first().json.question;\nconst rawMatches = $json.matches || [];\n\n// Minimum similarity score threshold for cosine distance\nconst RELEVANCE_THRESHOLD = parseFloat($env.PINECONE_MIN_RELEVANCE || '0.65');\n\nconst relevantMatches = rawMatches.filter(m => (m.score || 0) >= RELEVANCE_THRESHOLD);\n\nif (relevantMatches.length === 0) {\n  return [{\n    json: {\n      question,\n      has_sufficient_evidence: false,\n      answer: \"I do not have sufficient research in the database to answer this question. No indexed articles met the relevance threshold for your query.\",\n      sources: [],\n      insufficient_evidence: true\n    }\n  }];\n}\n\n// Construct grounded context string for Gemini prompt\nlet contextStr = '';\nconst sources = [];\n\nrelevantMatches.forEach((match, i) => {\n  const meta = match.metadata || {};\n  contextStr += `[Source ${i + 1}] Title: ${meta.title || 'Untitled'}\\n`;\n  contextStr += `URL: ${meta.source_url || 'Unknown'}\\n`;\n  contextStr += `Summary: ${meta.summary || ''}\\n`;\n  if (Array.isArray(meta.key_points)) {\n    contextStr += `Key Points: ${meta.key_points.join('; ')}\\n`;\n  }\n  contextStr += `Similarity Score: ${match.score?.toFixed(3)}\\n\\n`;\n\n  sources.push({\n    title: meta.title || 'Untitled',\n    source_url: meta.source_url || '',\n    score: match.score\n  });\n});\n\nreturn [{\n  json: {\n    question,\n    has_sufficient_evidence: true,\n    context: contextStr.trim(),\n    sources,\n    insufficient_evidence: false\n  }\n}];"
+      },
+      "id": "22222222-2222-4222-8222-222222222207",
+      "name": "Filter Relevance & Build Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.has_sufficient_evidence }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "22222222-2222-4222-8222-222222222208",
+      "name": "Has Sufficient Evidence?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"question\": \"{{ $json.question }}\",\n  \"answer\": \"{{ $json.answer }}\",\n  \"sources\": [],\n  \"insufficient_evidence\": true\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "22222222-2222-4222-8222-222222222209",
+      "name": "Respond Insufficient Evidence",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1900,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key={{ $env.GEMINI_API_KEY }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"role\": \"user\",\n      \"parts\": [\n        {\n          \"text\": \"Role: You are a rigorous research analyst answering questions using only retrieved research material.\\n\\nInstructions:\\n1. Answer the question based strictly on the provided research context.\\n2. Do not invent or assume facts not directly stated in the context.\\n3. Cite supporting source titles or URLs for major claims.\\n4. If the provided context does not contain enough information to answer certain aspects of the question, state that limitation clearly.\\n\\nResearch Context:\\n\" + $json.context + \"\\n\\nUser Question: \" + $json.question\n        }\n      ]\n    }\n  ],\n  \"generationConfig\": {\n    \"temperature\": 0.2\n  }\n}",
+        "options": {
+          "timeout": 20000,
+          "retry": {
+            "maxRetries": 3,
+            "retryInterval": 2000
+          }
+        }
+      },
+      "id": "22222222-2222-4222-8222-222222222210",
+      "name": "Generate Grounded Answer with Gemini",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1900,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract answer from Gemini response and assemble final response object\nconst prior = $('Filter Relevance & Build Context').first().json;\nconst geminiData = $json;\n\nconst answerText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ||\n  'Unable to synthesize response from available research context.';\n\nreturn [{\n  json: {\n    success: true,\n    question: prior.question,\n    answer: answerText,\n    sources: prior.sources,\n    insufficient_evidence: false\n  }\n}];"
+      },
+      "id": "22222222-2222-4222-8222-222222222211",
+      "name": "Format Grounded Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2140,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "22222222-2222-4222-8222-222222222212",
+      "name": "Respond with Grounded Answer",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2380,
+        120
+      ]
+    }
+  ],
+  "connections": {
+    "QA Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Question Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Question Payload": {
+      "main": [
+        [
+          {
+            "node": "Is Question Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Question Valid?": {
+      "main": [
+        [
+          {
+            "node": "Embed User Question",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return Invalid Question Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embed User Question": {
+      "main": [
+        [
+          {
+            "node": "Query Pinecone Vector Index",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Pinecone Vector Index": {
+      "main": [
+        [
+          {
+            "node": "Filter Relevance & Build Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Relevance & Build Context": {
+      "main": [
+        [
+          {
+            "node": "Has Sufficient Evidence?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Sufficient Evidence?": {
+      "main": [
+        [
+          {
+            "node": "Generate Grounded Answer with Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Insufficient Evidence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Grounded Answer with Gemini": {
+      "main": [
+        [
+          {
+            "node": "Format Grounded Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Grounded Response": {
+      "main": [
+        [
+          {
+            "node": "Respond with Grounded Answer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

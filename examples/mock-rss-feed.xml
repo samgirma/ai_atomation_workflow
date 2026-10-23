@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>quantum computing - Google News</title>
+    <link>https://news.google.com</link>
+    <description>Google News</description>
+    <language>en-US</language>
+    <item>
+      <title>Perimeter Institute Launches New Physics-Driven AI Initiative - HPCwire</title>
+      <link>https://news.google.com/rss/articles/article-perimeter-ai-physics?oc=5</link>
+      <guid isPermaLink="false">article-perimeter-ai-physics</guid>
+      <pubDate>Thu, 22 Oct 2026 22:30:37 GMT</pubDate>
+      <description>&lt;a href="https://news.google.com/rss/articles/article-perimeter-ai-physics"&gt;Perimeter Institute Launches New Physics-Driven AI Initiative&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color="#6f6f6f"&gt;HPCwire&lt;/font&gt;</description>
+      <source url="https://www.hpcwire.com">HPCwire</source>
+    </item>
+    <!-- Duplicate URL with different casing or same link -->
+    <item>
+      <title>Perimeter Institute Launches New Physics-Driven AI Initiative (Duplicate) - HPCwire</title>
+      <link>https://news.google.com/rss/articles/article-perimeter-ai-physics?oc=5</link>
+      <guid isPermaLink="false">article-perimeter-ai-physics-dup</guid>
+      <pubDate>Thu, 22 Oct 2026 22:30:37 GMT</pubDate>
+      <description>Duplicate article test.</description>
+      <source url="https://www.hpcwire.com">HPCwire</source>
+    </item>
+    <item>
+      <title>NSA Announces Post-Quantum Cryptography Measures - National Security Agency</title>
+      <link>https://news.google.com/rss/articles/article-nsa-post-quantum?oc=5</link>
+      <guid isPermaLink="false">article-nsa-post-quantum</guid>
+      <pubDate>Thu, 01 Oct 2026 07:00:00 GMT</pubDate>
+      <description>NSA announces post-quantum crypto standards.</description>
+      <source url="https://www.nsa.gov">National Security Agency</source>
+    </item>
+    <item>
+      <title>Gix Internet Reports Quantum X Labs Milestones With NVIDIA, IBM - Quantum Zeitgeist</title>
+      <link>https://news.google.com/rss/articles/article-gix-quantum-nvidia?oc=5</link>
+      <guid isPermaLink="false">article-gix-quantum-nvidia</guid>
+      <pubDate>Thu, 22 Oct 2026 18:58:54 GMT</pubDate>
+      <description>Quantum X Labs announced research validation across hybrid workflows.</description>
+      <source url="https://quantumzeitgeist.com">Quantum Zeitgeist</source>
+    </item>
+    <item>
+      <title>SEALSQ Keynote Presentation on Quantum + AI Convergence - Quantum Zeitgeist</title>
+      <link>https://news.google.com/rss/articles/article-sealsq-keynote?oc=5</link>
+      <guid isPermaLink="false">article-sealsq-keynote</guid>
+      <pubDate>Thu, 22 Oct 2026 18:58:54 GMT</pubDate>
+      <description>Semiconductor security architectures designed for edge devices.</description>
+      <source url="https://quantumzeitgeist.com">Quantum Zeitgeist</source>
+    </item>
+    <item>
+      <title>US Treasury Proposes Expanding Investment Review to Quantum - BigGo Finance</title>
+      <link>https://news.google.com/rss/articles/article-treasury-quantum?oc=5</link>
+      <guid isPermaLink="false">article-treasury-quantum</guid>
+      <pubDate>Fri, 23 Oct 2026 11:55:00 GMT</pubDate>
+      <description>US Treasury outbound investment rules on quantum sensing and computing.</description>
+      <source url="https://finance.biggo.com">BigGo Finance</source>
+    </item>
+    <!-- 6th valid article: will verify that top-5 slicing works properly -->
+    <item>
+      <title>Extra 6th Older Article - Should Be Excluded By Top 5 Limit</title>
+      <link>https://news.google.com/rss/articles/article-sixth-older?oc=5</link>
+      <guid isPermaLink="false">article-sixth-older</guid>
+      <pubDate>Mon, 01 Jan 2026 00:00:00 GMT</pubDate>
+      <description>Older article test to verify limit.</description>
+      <source url="https://example.com">Example Publisher</source>
+    </item>
+    <!-- Malformed item with no link -->
+    <item>
+      <title>Malformed Article Without Link</title>
+      <link></link>
+      <pubDate>Fri, 23 Oct 2026 12:00:00 GMT</pubDate>
+      <description>Should be skipped.</description>
+    </item>
+  </channel>
+</rss>
