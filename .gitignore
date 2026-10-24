@@ -39,3 +39,4 @@ tmp/
 temp/
 coverage/
 .system_generated/
+*.zip
